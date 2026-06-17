@@ -17,7 +17,7 @@ class AttributionController extends Controller
               ->orWhere('matricule', 'like', '%'.$request->search.'%')
         );
 
-        $attributions = $query->latest()->paginate(20)->withQueryString();
+        $attributions = $query->latest()->paginate(200)->withQueryString();
         $sites        = Site::orderBy('nom')->get();
 
         return view('attributions.index', compact('attributions', 'sites'));

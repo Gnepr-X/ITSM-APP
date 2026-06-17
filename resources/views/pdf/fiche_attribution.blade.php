@@ -60,7 +60,7 @@
     <img src="{{ storage_path('app/public/'.$attribution->equipement->qr_code) }}"
          alt="QR Code">
     <p>Scanner pour<br>infos techniques</p>
-  </div>
+  </div><br>  
   @endif
   <h1>FICHE D'ATTRIBUTION DE MATÉRIEL INFORMATIQUE</h1>
   <div class="badge-fiche">N° {{ $attribution->numero_fiche }}</div>
@@ -77,10 +77,10 @@
   <tr>
     <td>Nom & Prénom</td>
     <td>{{ $attribution->ressource->prenom }} {{ $attribution->ressource->nom }}</td>
-  </tr>
-  <tr>
-    <td>Matricule</td>
-    <td>{{ $attribution->ressource->matricule }}</td>
+    <tr>
+      <td>Matricule</td>
+      <td style="color: red;">{{ $attribution->ressource->matricule }}</td>
+    </tr>
   </tr>
   <tr>
     <td>Poste</td>

@@ -63,7 +63,7 @@
             <span class="badge {{ $wifi->operateur === 'ORANGE' ? 'bg-warning text-dark' : 'bg-warning text-dark' }}">
               {{ $wifi->operateur }}
             </span>
-            <span class="badge bg-{{ $wifi->statut === 'actif' ? 'success' : 'secondary' }}">
+            <span class="badge bg-{{ $wifi->statut === 'actif' ? 'success' : 'danger' }}">
               {{ ucfirst($wifi->statut) }}
             </span>
           </div>

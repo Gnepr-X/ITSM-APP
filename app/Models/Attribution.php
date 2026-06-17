@@ -21,8 +21,14 @@ class Attribution extends Model
 
     protected static function booted()
     {
+        // static::creating(function ($a) {
+        //     $a->numero_fiche = 'ATT-' . date('Ymd') . '-' . str_pad(
+        //         Attribution::whereDate('created_at', today())->count() + 1,
+        //         4, '0', STR_PAD_LEFT
+        //     );
+        // });
         static::creating(function ($a) {
-            $a->numero_fiche = 'ATT-' . date('Ymd') . '-' . str_pad(
+            $a->numero_fiche = 'ATT-' . $a->date_attribution->format('Ymd') . '-' . str_pad(
                 Attribution::whereDate('created_at', today())->count() + 1,
                 4, '0', STR_PAD_LEFT
             );

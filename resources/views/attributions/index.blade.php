@@ -71,7 +71,7 @@
           <td><span class="badge bg-light text-dark border" style="font-size:11px">{{ $a->site->nom }}</span></td>
           <td style="font-size:13px">{{ $a->date_attribution->format('d/m/Y') }}</td>
           <td>
-            <span class="badge bg-{{ $a->statut === 'actif' ? 'primary' : 'secondary' }}">
+            <span class="badge bg-{{ $a->statut === 'actif' ? 'success' : 'danger' }}">
               {{ ucfirst($a->statut) }}
             </span>
           </td>
