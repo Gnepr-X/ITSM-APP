@@ -11,7 +11,6 @@ class Equipement extends Model
         'valeur', 'qr_code', 'notes'
     ];
 
-    // ✅ Ajouter les casts
     protected $casts = [
         'date_acquisition' => 'date',
     ];
@@ -24,28 +23,31 @@ class Equipement extends Model
     protected static function booted()
     {
         static::created(function ($equip) {
-            if (!\Storage::disk('public')->exists('qrcodes')) {
-                \Storage::disk('public')->makeDirectory('qrcodes');
-            }
-
-            $data = json_encode([
-                'code'   => $equip->code_inventaire,
-                'type'   => $equip->type,
-                'marque' => $equip->marque,
-                'modele' => $equip->modele,
-                'serie'  => $equip->numero_serie,
-                'site'   => $equip->site->nom ?? '',
-                'statut' => $equip->statut,
-            ]);
-
-            $filename = 'qrcodes/' . $equip->code_inventaire . '.png';
-
-            \QrCode::format('png')
-                   ->size(250)
-                   ->errorCorrection('H')
-                   ->generate($data, \Storage::disk('public')->path($filename));
-
-            $equip->updateQuietly(['qr_code' => $filename]);
+            $equip->genererQrCode();
         });
+    }
+
+    /**
+     * Génère (ou régénère) le QR code avec les infos matériel + attribution active
+     */
+    public function genererQrCode(): void
+    {
+        if (!\Storage::disk('public')->exists('qrcodes')) {
+            \Storage::disk('public')->makeDirectory('qrcodes');
+        }
+
+        // ✅ Change : on encode une URL au lieu du JSON
+        $url = route('equipements.public-info', $this->code_inventaire);
+
+        $filename = 'qrcodes/' . $this->code_inventaire . '.svg';
+
+        $svg = \QrCode::format('svg')
+                    ->size(300)
+                    ->errorCorrection('H')
+                    ->generate($url);
+
+        \Storage::disk('public')->put($filename, $svg);
+
+        $this->updateQuietly(['qr_code' => $filename]);
     }
 }

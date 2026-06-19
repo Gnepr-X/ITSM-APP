@@ -60,4 +60,9 @@ Route::middleware('auth')->group(function () {
             Route::patch('interventions/{intervention}/statut',[InterventionController::class, 'changerStatut'])->name('interventions.statut');
 });
 
+// Route publique pour la consultation via QR code (pas d'authentification requise)
+Route::get('equipements/info/{code}',
+    [EquipementController::class, 'publicInfo']
+)->name('equipements.public-info');
+
 require __DIR__.'/auth.php';

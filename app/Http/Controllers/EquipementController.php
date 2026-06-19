@@ -74,6 +74,25 @@ class EquipementController extends Controller
         return view('equipements.edit', compact('equipement', 'sites'));
     }
 
+    // public function update(Request $request, Equipement $equipement)
+    // {
+    //     $validated = $request->validate([
+    //         'designation'      => 'required|string|max:255',
+    //         'type'             => 'required|in:ordinateur,imprimante,serveur,switch,routeur,camera,alarme,autre',
+    //         'marque'           => 'nullable|string|max:100',
+    //         'modele'           => 'nullable|string|max:100',
+    //         'numero_serie'     => 'nullable|string|max:100|unique:equipements,numero_serie,' . $equipement->id,
+    //         'statut'           => 'required|in:disponible,attribue,en_reparation,hors_service',
+    //         'site_id'          => 'required|exists:sites,id',
+    //         'date_acquisition' => 'nullable|date',
+    //         'valeur'           => 'nullable|numeric|min:0',
+    //         'notes'            => 'nullable|string',
+    //     ]);
+
+    //     $equipement->update($validated);
+    //     return redirect()->route('equipements.index')->with('success', 'Équipement mis à jour.');
+    // }
+
     public function update(Request $request, Equipement $equipement)
     {
         $validated = $request->validate([
@@ -90,6 +109,8 @@ class EquipementController extends Controller
         ]);
 
         $equipement->update($validated);
+        $equipement->genererQrCode(); // ✅ régénère le QR avec les infos à jour
+
         return redirect()->route('equipements.index')->with('success', 'Équipement mis à jour.');
     }
 
@@ -114,31 +135,82 @@ class EquipementController extends Controller
         return view('equipements.qrcode', compact('equipement'));
     }
 
+    // public function regenererQr(Equipement $equipement)
+    // {
+    //     if (!\Storage::disk('public')->exists('qrcodes')) {
+    //         \Storage::disk('public')->makeDirectory('qrcodes');
+    //     }
+
+    //     $data = json_encode([
+    //         'code'   => $equipement->code_inventaire,
+    //         'type'   => $equipement->type,
+    //         'marque' => $equipement->marque,
+    //         'modele' => $equipement->modele,
+    //         'serie'  => $equipement->numero_serie,
+    //         'site'   => $equipement->site->nom ?? '',
+    //         'statut' => $equipement->statut,
+    //     ]);
+
+    //     $filename = 'qrcodes/' . $equipement->code_inventaire . '.png';
+
+    //     \QrCode::format('png')
+    //         ->size(250)
+    //         ->errorCorrection('H')
+    //         ->generate($data, \Storage::disk('public')->path($filename));
+
+    //     $equipement->update(['qr_code' => $filename]);
+
+    //     return back()->with('success', 'QR code généré avec succès.');
+    // }
+
+    // public function regenererQr(Equipement $equipement)
+    // {
+    //     if (!\Storage::disk('public')->exists('qrcodes')) {
+    //         \Storage::disk('public')->makeDirectory('qrcodes');
+    //     }
+
+    //     $data = json_encode([
+    //         'code'   => $equipement->code_inventaire,
+    //         'type'   => $equipement->type,
+    //         'marque' => $equipement->marque,
+    //         'modele' => $equipement->modele,
+    //         'serie'  => $equipement->numero_serie,
+    //         'site'   => $equipement->site->nom ?? '',
+    //         'statut' => $equipement->statut,
+    //     ]);
+
+    //     $filename = 'qrcodes/' . $equipement->code_inventaire . '.svg';
+
+    //     $svg = \QrCode::format('svg')
+    //                 ->size(250)
+    //                 ->errorCorrection('H')
+    //                 ->generate($data);
+
+    //     \Storage::disk('public')->put($filename, $svg);
+
+    //     $equipement->update(['qr_code' => $filename]);
+
+    //     return back()->with('success', 'QR code généré avec succès.');
+    // }
+
     public function regenererQr(Equipement $equipement)
     {
-        if (!\Storage::disk('public')->exists('qrcodes')) {
-            \Storage::disk('public')->makeDirectory('qrcodes');
-        }
+        $equipement->genererQrCode();
+        return back()->with('success', 'QR code régénéré avec succès.');
+    }
 
-        $data = json_encode([
-            'code'   => $equipement->code_inventaire,
-            'type'   => $equipement->type,
-            'marque' => $equipement->marque,
-            'modele' => $equipement->modele,
-            'serie'  => $equipement->numero_serie,
-            'site'   => $equipement->site->nom ?? '',
-            'statut' => $equipement->statut,
-        ]);
+    public function publicInfo($code)
+    {
+        $equipement = Equipement::where('code_inventaire', $code)
+            ->with('site')
+            ->firstOrFail();
 
-        $filename = 'qrcodes/' . $equipement->code_inventaire . '.png';
+        $attribution = $equipement->attributions()
+            ->where('statut', 'actif')
+            ->with('ressource')
+            ->latest('date_attribution')
+            ->first();
 
-        \QrCode::format('png')
-            ->size(250)
-            ->errorCorrection('H')
-            ->generate($data, \Storage::disk('public')->path($filename));
-
-        $equipement->update(['qr_code' => $filename]);
-
-        return back()->with('success', 'QR code généré avec succès.');
+        return view('equipements.public-info', compact('equipement', 'attribution'));
     }
 }

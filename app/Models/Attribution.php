@@ -21,22 +21,16 @@ class Attribution extends Model
 
     protected static function booted()
     {
-        // static::creating(function ($a) {
-        //     $a->numero_fiche = 'ATT-' . date('Ymd') . '-' . str_pad(
-        //         Attribution::whereDate('created_at', today())->count() + 1,
-        //         4, '0', STR_PAD_LEFT
-        //     );
-        // });
         static::creating(function ($a) {
-            $a->numero_fiche = 'ATT-' . $a->date_attribution->format('Ymd') . '-' . str_pad(
+            $a->numero_fiche = 'ATT-' . date('Ymd') . '-' . str_pad(
                 Attribution::whereDate('created_at', today())->count() + 1,
                 4, '0', STR_PAD_LEFT
             );
         });
 
-        // Mettre à jour le statut de l'équipement à l'attribution
         static::created(function ($a) {
             $a->equipement->update(['statut' => 'attribue']);
+            $a->equipement->genererQrCode(); // ✅ régénère le QR avec les infos ressource
         });
     }
 }

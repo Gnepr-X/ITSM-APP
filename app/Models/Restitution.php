@@ -28,15 +28,14 @@ class Restitution extends Model
     protected static function booted()
     {
         static::created(function ($r) {
-            // Marquer l'attribution comme restituée
             $r->attribution->update(['statut' => 'restitue']);
 
-            // Remettre l'équipement disponible ou hors service selon état
             $statut = in_array($r->etat_retour, ['hors_service'])
                 ? 'hors_service'
                 : ($r->etat_retour === 'endommagé' ? 'en_reparation' : 'disponible');
 
             $r->attribution->equipement->update(['statut' => $statut]);
+            $r->attribution->equipement->genererQrCode(); // ✅ régénère le QR sans ressource
         });
     }
 }

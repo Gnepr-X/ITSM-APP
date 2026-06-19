@@ -39,7 +39,7 @@
       <div class="card-body text-center py-4">
         @if($attribution->statut === 'actif')
           <div class="mb-2">
-            <span class="badge bg-primary" style="font-size:14px;padding:8px 20px">
+            <span class="badge bg-success" style="font-size:14px;padding:8px 20px">
               <i class="bi bi-check-circle me-2"></i>Attribution active
             </span>
           </div>
