@@ -30,19 +30,25 @@ class RessourceController extends Controller
         $sites = Site::orderBy('nom')->get();
         return view('ressources.create', compact('sites'));
     }
+    
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'nom'         => 'required|string|max:255',
             'prenom'      => 'required|string|max:255',
-            'matricule'   => 'required|string|max:50|unique:ressources',
+            'matricule'   => 'required|digits:4|integer', // l'utilisateur saisit juste l'année
             'poste'       => 'required|string|max:255',
             'departement' => 'nullable|string|max:255',
             'site_id'     => 'required|exists:sites,id',
             'email'       => 'nullable|email|max:255',
             'telephone'   => 'nullable|string|max:20',
         ]);
+
+        $ordre = Ressource::count() + 1;
+
+        // On écrase la valeur saisie (l'année) par le matricule formaté
+        $validated['matricule'] = 'LD-' . str_pad($ordre, 3, '0', STR_PAD_LEFT) . $request->matricule;
 
         Ressource::create($validated);
         return redirect()->route('ressources.index')->with('success', 'Ressource créée.');

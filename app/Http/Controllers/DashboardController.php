@@ -39,6 +39,7 @@ class DashboardController extends Controller
 
             // Stats par site
             'equipements_par_site'   => Site::withCount('equipements')->get(),
+            'ressources_par_site'   => Site::withCount('ressources')->get(),
             'interventions_par_site' => Site::withCount(['interventions' => fn($q) =>
                                             $q->whereIn('statut', ['ouvert', 'en_cours'])])->get(),
         ]);
