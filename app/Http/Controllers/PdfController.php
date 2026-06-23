@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\{Attribution, Equipement, AccesWifi, Site, Ressource, Intervention};
 use Barryvdh\DomPDF\Facade\Pdf;
 

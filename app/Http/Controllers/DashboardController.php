@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\{Site, Ressource, Equipement, Attribution, Intervention, Camera, Alarme, AccesWifi, Stock};
 
 class DashboardController extends Controller
