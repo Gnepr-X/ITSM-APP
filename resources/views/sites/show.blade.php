@@ -63,7 +63,7 @@
             @forelse($site->equipements->take(8) as $eq)
             <tr>
               <td><code style="font-size:11px">{{ $eq->code_inventaire }}</code></td>
-              <td>{{ $eq->designation }}</td>
+              <td>{{ $eq->marque }} {{ $eq->modele }}</td>
               <td><span class="badge bg-light text-dark border">{{ $eq->type }}</span></td>
               <td>
                 @php

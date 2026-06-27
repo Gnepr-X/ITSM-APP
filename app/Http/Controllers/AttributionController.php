@@ -43,6 +43,7 @@ class AttributionController extends Controller
             'observation'      => 'nullable|string',
         ]);
 
+       // dd($validated);
         // Vérifier que l'équipement est disponible
         $equipement = Equipement::findOrFail($validated['equipement_id']);
         if ($equipement->statut !== 'disponible') {

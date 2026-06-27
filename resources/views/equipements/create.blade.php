@@ -64,7 +64,7 @@
             </div>
             <div class="col-12">
               <label class="form-label fw-medium">Notes</label>
-              <textarea name="notes" class="form-control" rows="2" placeholder="Observations, accessoires inclus...">{{ old('notes') }}</textarea>
+              <textarea name="notes" class="form-control" rows="8" placeholder="Observations, accessoires inclus...">{{ old('notes') }}</textarea>
             </div>
           </div>
           <hr>

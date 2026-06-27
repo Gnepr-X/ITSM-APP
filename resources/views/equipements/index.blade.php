@@ -86,7 +86,7 @@
           <td>
             <span style="font-weight:500">{{ $eq->designation }}</span>
             @if($eq->numero_serie)
-              <br><small class="text-muted">S/N: {{ $eq->numero_serie }}</small>
+              <br><small class="text-muted">{{ $eq->numero_serie }}</small>
             @endif
           </td>
           <td><span class="badge bg-light text-dark border">{{ ucfirst($eq->type) }}</span></td>
@@ -98,7 +98,7 @@
           </td>
           <td>
             @php
-              $colors = ['disponible'=>'success','attribue'=>'primary','en_reparation'=>'warning','hors_service'=>'danger'];
+              $colors = ['disponible'=>'success','attribue'=>'dark','en_reparation'=>'warning','hors_service'=>'danger'];
             @endphp
             <span class="badge bg-{{ $colors[$eq->statut] ?? 'secondary' }}">{{ ucfirst(str_replace('_',' ',$eq->statut)) }}</span>
           </td>

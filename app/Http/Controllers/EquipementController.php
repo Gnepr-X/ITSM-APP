@@ -20,7 +20,7 @@ class EquipementController extends Controller
               ->orWhere('numero_serie', 'like', '%'.$request->search.'%');
         });
 
-        $equipements = $query->orderBy('site_id')->orderBy('type')->paginate(20)->withQueryString();
+        $equipements = $query->orderBy('site_id')->orderBy('type')->paginate(200)->withQueryString();
         $sites       = Site::orderBy('nom')->get();
 
         return view('equipements.index', compact('equipements', 'sites'));

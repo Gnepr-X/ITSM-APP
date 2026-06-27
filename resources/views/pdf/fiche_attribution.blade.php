@@ -37,6 +37,10 @@
                      margin-top:6px; }
 
   .signatures { width:100%; margin-top:50px; }
+  .footer { margin-top:30px; padding-top:10px; border-top:1px solid #e5e7eb;
+            font-size:9px; color:#9ca3af; text-align:center; }
+
+            
   .sig-left  { width:45%; display:inline-block; text-align:center;
                border-top:1px solid #333; padding-top:8px; vertical-align:top; }
   .sig-right { width:45%; display:inline-block; text-align:center;
@@ -45,8 +49,6 @@
   .sig-label { font-size:11px; color:#6b7280; margin-bottom:6px; }
   .sig-name  { font-size:12px; font-weight:bold; }
 
-  .footer { margin-top:30px; padding-top:10px; border-top:1px solid #e5e7eb;
-            font-size:9px; color:#9ca3af; text-align:center; }
 
   .clearfix::after { content:''; display:table; clear:both; }
 </style>
@@ -62,8 +64,8 @@
     <p>Scanner pour<br>infos techniques</p>
   </div><br>  
   @endif
-  <h1>FICHE D'ATTRIBUTION DE MATÉRIEL INFORMATIQUE</h1>
-  <div class="badge-fiche">N° {{ $attribution->numero_fiche }}</div>
+    <h1>FICHE D'ATTRIBUTION DE MATÉRIEL INFORMATIQUE</h1>
+    <div class="badge-fiche">N° {{ $attribution->numero_fiche }}</div>
   <div class="header-meta">
     Date d'attribution : {{ \Carbon\Carbon::parse($attribution->date_attribution)->format('d/m/Y') }}
     &nbsp;·&nbsp; Attribué par : {{ $attribution->attribue_par }}
@@ -76,7 +78,7 @@
 <table class="info">
   <tr>
     <td>Nom & Prénom</td>
-    <td>{{ $attribution->ressource->prenom }} {{ $attribution->ressource->nom }}</td>
+    <td>{{ $attribution->ressource->nom }} {{ $attribution->ressource->prenom }} </td>
     <tr>
       <td>Matricule</td>
       <td style="color: red;">{{ $attribution->ressource->matricule }}</td>
@@ -146,7 +148,7 @@
     <div class="sig-label">Reçu par le bénéficiaire</div>
     <br><br>
     <div class="sig-name">
-      {{ $attribution->ressource->prenom }} {{ $attribution->ressource->nom }}
+       {{ $attribution->ressource->nom }} {{ $attribution->ressource->prenom }}
     </div>
   </div>
 </div>

@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Attribution extends Model
 {
@@ -21,16 +22,24 @@ class Attribution extends Model
 
     protected static function booted()
     {
+        // Valeur temporaire obligatoire car numero_fiche est NOT NULL
         static::creating(function ($a) {
-            $a->numero_fiche = 'ATT-' . date('Ymd') . '-' . str_pad(
-                Attribution::whereDate('created_at', today())->count() + 1,
-                4, '0', STR_PAD_LEFT
-            );
+            $a->numero_fiche = 'TEMP';
         });
 
+        // Génération du vrai numéro avec l'id disponible
         static::created(function ($a) {
+            $a->updateQuietly([
+                'numero_fiche' => 'ATT-'
+                    . Carbon::parse($a->date_attribution)->format('Ymd')
+                    . '-' . $a->id
+            ]);
+
+            // Mise à jour statut équipement
             $a->equipement->update(['statut' => 'attribue']);
-            $a->equipement->genererQrCode(); // ✅ régénère le QR avec les infos ressource
+
+            // Régénération du QR code avec les infos ressource
+            $a->equipement->genererQrCode();
         });
     }
 }
