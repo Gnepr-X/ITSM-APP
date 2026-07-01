@@ -20,8 +20,31 @@ class Equipement extends Model
     public function interventions(){ return $this->hasMany(Intervention::class); }
     public function stocks()       { return $this->hasMany(Stock::class); }
 
+    // protected static function booted()
+    // {
+    //     static::created(function ($equip) {
+    //         $equip->genererQrCode();
+    //     });
+    // }
+
     protected static function booted()
     {
+        static::creating(function ($equip) {
+            // Sécurité supplémentaire si le code_inventaire n'est pas déjà défini
+            if (empty($equip->code_inventaire)) {
+                $prefixe = strtoupper(substr($equip->type, 0, 3));
+                $dernier = static::where('code_inventaire', 'like', "EQ-{$prefixe}-%")
+                    ->orderByRaw('CAST(SUBSTRING_INDEX(code_inventaire, "-", -1) AS UNSIGNED) DESC')
+                    ->value('code_inventaire');
+
+                $prochainNumero = $dernier
+                    ? (int) substr($dernier, strrpos($dernier, '-') + 1) + 1
+                    : 1;
+
+                $equip->code_inventaire = 'EQ-' . $prefixe . '-' . str_pad($prochainNumero, 5, '0', STR_PAD_LEFT);
+            }
+        });
+
         static::created(function ($equip) {
             $equip->genererQrCode();
         });

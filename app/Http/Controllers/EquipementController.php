@@ -32,6 +32,28 @@ class EquipementController extends Controller
         return view('equipements.create', compact('sites'));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'designation'      => 'required|string|max:255',
+    //         'type'             => 'required|in:ordinateur,imprimante,serveur,switch,routeur,camera,alarme,autre',
+    //         'marque'           => 'nullable|string|max:100',
+    //         'modele'           => 'nullable|string|max:100',
+    //         'numero_serie'     => 'nullable|string|max:100|unique:equipements',
+    //         'site_id'          => 'required|exists:sites,id',
+    //         'date_acquisition' => 'nullable|date',
+    //         'valeur'           => 'nullable|numeric|min:0',
+    //         'notes'            => 'nullable|string',
+    //     ]);
+
+    //     $prefixe = strtoupper(substr($validated['type'], 0, 3));
+    //     $validated['code_inventaire'] = 'EQ-' . $prefixe . '-'
+    //         . str_pad(Equipement::count() + 1, 5, '0', STR_PAD_LEFT);
+
+    //     Equipement::create($validated);
+    //     return redirect()->route('equipements.index')->with('success', 'Équipement créé avec QR code généré.');
+    // }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -46,11 +68,8 @@ class EquipementController extends Controller
             'notes'            => 'nullable|string',
         ]);
 
-        $prefixe = strtoupper(substr($validated['type'], 0, 3));
-        $validated['code_inventaire'] = 'EQ-' . $prefixe . '-'
-            . str_pad(Equipement::count() + 1, 5, '0', STR_PAD_LEFT);
+        Equipement::create($validated); // ✅ code_inventaire généré automatiquement dans le modèle
 
-        Equipement::create($validated);
         return redirect()->route('equipements.index')->with('success', 'Équipement créé avec QR code généré.');
     }
 
